@@ -31,3 +31,53 @@
 ⑤ 게임이 시작되면 뱀은 처음에 왼쪽으로 이동하며, 플레이어는 키보드를 사용하여 이동 방향을 조작할 수 있다.
 
 - 'W' 또는 'w'를 누르면 뱀이 위로 이동한다.
+- 'A' 또는 'a'를 누르면 뱀이 왼쪽으로 이동한다.
+- 'S' 또는 's'를 누르면 뱀이 아래로 이동한다.
+- 'D' 또는 'd'를 누르면 뱀이 오른쪽으로 이동한다.
+
+그러나 현재 진행 방향의 반대 방향으로 즉시 방향을 바꾸는 것은 불가능하다. 또한, 업데이트 주기는 MFC에서 제공하는 타이머 기능을 통해 55ms로 제한된다.
+
+⑥ 필드 위의 빨간색 정사각형은 뱀이 먹어야 하는 먹이이다. 뱀의 머리가 먹이를 만나면, 몸통이 하나씩 증가한다. 그 후, 새로운 먹이는 무작위 위치에 생성된다.
+
+⑦ 게임 종료 조건은 다음과 같다.
+
+- 뱀이 벽과 충돌하면 게임이 종료되며, 아래와 같은 팝업 메시지 박스가 나타난다.
+
+![image](https://github.com/user-attachments/assets/f40ff801-8e6c-4044-ac95-3aa09ac6daa7)
+
+- 뱀이 자신의 몸통과 충돌하면 게임이 종료되며, 아래와 같은 팝업 메시지 박스가 나타난다.
+
+![image](https://github.com/user-attachments/assets/6873ce1a-183f-4598-9a71-e739816b4865)
+
+# 2. Flowchart
+![image](https://github.com/user-attachments/assets/d4f70873-349f-41d7-bc1d-725291e2e784)
+
+# 3. Result
+## 3.1 초기 화면
+![image](https://github.com/user-attachments/assets/c18056c6-1fe5-4347-a839-fdf0ffda7c04)
+
+![image](https://github.com/user-attachments/assets/6a85e0c4-caf2-4f2d-b16c-be56587e6fff)
+
+## 3.2 뱀이 처음 먹이를 먹고 성장했을 때
+![image](https://github.com/user-attachments/assets/96978c51-d116-4cc2-b860-740d581e9f4e)
+
+## 3.3 뱀이 여러 번 먹이를 먹고 성장했을 때
+![image](https://github.com/user-attachments/assets/c10d4afb-77b5-432c-a2c7-014624cba14e)
+
+## 3.4 뱀이 벽과 충돌했을 때
+![image](https://github.com/user-attachments/assets/b6fb73a7-75a1-40cc-84d4-65ec9cc5b410)
+
+## 3.5 뱀이 몸에 충돌했을 때
+![image](https://github.com/user-attachments/assets/69114a56-f9c1-4e19-b2d7-eb54be60e1e0)
+
+# 4. Consideration
+필드와 뱀을 묘사하기 위해, `OnPaint()`에 코드를 추가하는 것이 필요했다. 그래서 이에 대한 코드를 작성했다. 하지만 테스트를 위해 화면이 나타났을 때, 화면이 깜빡이는 문제가 발생했다. 즉, 화면이 안정적인 상태를 유지하지 못했다. 이전의 `OnPaint()`에서는 아래와 같은 코드가 존재했지만, 현재 `OnPaint()`에서는 `CDialogEX::OnPaint();` 코드가 없었다.
+
+```cpp
+CPaintDC dc(this);
+CDialogEX::OnPaint();
+```
+
+따라서, 현재 `OnPaint()`에 `CDialogEX::OnPaint();` 코드를 추가하였다. 그러자 화면 깜빡임 문제가 해결되었다.
+
+한편, 뱀이 머리 방향으로 이동할 때, 반대 방향으로의 키 입력은 무효화되었으며, 문제없이 작동했다. 그러나 플레이어가 키를 눌러 현재 머리 방향과 같은 방향으로 이동을 명령했을 때, 뱀은 순간적으로 멈춘 후 계속 움직였다. 이로 인해 뱀이 머뭇거리는 문제를 해결할 필요가 있었다. 해결책으로, 기존에 반대 방향의 키 입력을 무효화하는 원리를 활용하여, 머리 방향과 같은 방향으로 이동을 지시하는 키 입력도 무효화하도록 했다. 그 결과, 뱀은 더 이상 머뭇거리지 않고 원활하게 이동할 수 있었다.
